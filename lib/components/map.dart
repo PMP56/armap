@@ -5,7 +5,8 @@ import 'package:latlong2/latlong.dart' as latLng;
 import 'package:location/location.dart';
 
 class Map extends StatefulWidget {
-  const Map({Key? key}) : super(key: key);
+  final bool large;
+  const Map(this.large, {Key? key}) : super(key: key);
 
   @override
   State<Map> createState() => _MapState();
@@ -161,7 +162,7 @@ class _MapState extends State<Map> {
         options: MapOptions(
           center: latLng.LatLng(27.6195, 85.5386),
           zoom: 18,
-          maxZoom: 18,
+          maxZoom: (widget.large)?18 : 15,
           interactiveFlags: interActiveFlags
         ),
         layers: [
@@ -180,7 +181,7 @@ class _MapState extends State<Map> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: (widget.large)? FloatingActionButton(
         child: Icon(Icons.my_location),
         onPressed: (){
             mapController.move(
@@ -202,7 +203,7 @@ class _MapState extends State<Map> {
             }
           });
         },
-      ),
+      ) : null,
     );
   }
 }

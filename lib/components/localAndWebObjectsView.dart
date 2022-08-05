@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class LocalAndWebObjectsView extends StatefulWidget {
-  const LocalAndWebObjectsView({Key? key}) : super(key: key);
+  final bool large;
+  const LocalAndWebObjectsView(this.large, {Key? key}) : super(key: key);
 
   @override
   State<LocalAndWebObjectsView> createState() => _LocalAndWebObjectsViewState();
@@ -34,43 +35,16 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Local / Web Objects"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * .8,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(22),
-                child: ARView(
-                  onARViewCreated: onARViewCreated,
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                      onPressed: onLocalObjectButtonPressed,
-                      child: const Text("Add / Remove Local Object")),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: ElevatedButton(
-                      onPressed: onWebObjectAtButtonPressed,
-                      child: const Text("Add / Remove Web Object")),
-                )
-              ],
-            ),
-          ],
+      body: SizedBox(
+        // height: MediaQuery.of(context).size.height * .8,
+        child: ARView(
+          onARViewCreated: onARViewCreated,
         ),
       ),
+      floatingActionButton: (!widget.large)? FloatingActionButton(
+        child: Icon(Icons.widgets_outlined),
+        onPressed: onWebObjectAtButtonPressed,
+      ) : null,
     );
   }
 
@@ -81,33 +55,34 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
       ARLocationManager arLocationManager) {
     this.arSessionManager = arSessionManager;
     this.arObjectManager = arObjectManager;
-
+    //
     this.arSessionManager.onInitialize(
+      showAnimatedGuide: false,
       showFeaturePoints: false,
       showPlanes: true,
-      customPlaneTexturePath: "assets/triangle.png",
+      // customPlaneTexturePath: "assets/triangle.png",
       showWorldOrigin: true,
-      handleTaps: false,
+      handleTaps: true,
     );
     this.arObjectManager.onInitialize();
   }
 
-  Future<void> onLocalObjectButtonPressed() async {
-    if (localObjectNode != null) {
-      arObjectManager.removeNode(localObjectNode!);
-      localObjectNode = null;
-    } else {
-      var newNode = ARNode(
-          type: NodeType.localGLTF2,
-          uri: "assets/Chicken_01/Chicken_01.gltf",
-          scale: Vector3(0.2, 0.2, 0.2),
-          position: Vector3(0.0, 0.0, 0.0),
-          rotation: Vector4(1.0, 0.0, 0.0, 0.0));
-      bool? didAddLocalNode = await arObjectManager.addNode(newNode);
-      localObjectNode = (didAddLocalNode!) ? newNode : null;
-    }
-  }
-
+  // Future<void> onLocalObjectButtonPressed() async {
+  //   if (localObjectNode != null) {
+  //     arObjectManager.removeNode(localObjectNode!);
+  //     localObjectNode = null;
+  //   } else {
+  //     var newNode = ARNode(
+  //         type: NodeType.localGLTF2,
+  //         uri: "assets/Chicken_01/Chicken_01.gltf",
+  //         scale: Vector3(0.2, 0.2, 0.2),
+  //         position: Vector3(0.0, 0.0, 0.0),
+  //         rotation: Vector4(1.0, 0.0, 0.0, 0.0));
+  //     bool? didAddLocalNode = await arObjectManager.addNode(newNode);
+  //     localObjectNode = (didAddLocalNode!) ? newNode : null;
+  //   }
+  // }
+  //
   Future<void> onWebObjectAtButtonPressed() async {
     if (webObjectNode != null) {
       arObjectManager.removeNode(webObjectNode!);
@@ -117,7 +92,7 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
           type: NodeType.webGLB,
           uri:
           "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Fox/glTF-Binary/Fox.glb",
-          scale: Vector3(0.2, 0.2, 0.2));
+          scale: Vector3(0.1, 0.1, 0.1));
       bool? didAddWebNode = await arObjectManager.addNode(newNode);
       webObjectNode = (didAddWebNode!) ? newNode : null;
     }
