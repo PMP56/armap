@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:armap/components/arcore.dart';
 import 'package:armap/components/map.dart';
 import 'package:armap/components/views.dart';
 import 'package:flutter/material.dart';
@@ -66,14 +64,14 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Stack(
         children: [
           Center(
-              child: (showMap)? Map(true) : Views(false),
+              child: (showMap)? const Map(true) : const Views(false),
           ),
           Positioned(
               top: 10,
               right: 10,
               child: GestureDetector(
                 onTap: (){
-                  print("Tapped");
+                  // print("Tapped");
                   setState(() {
                     showMap = !showMap;
                   });
@@ -96,14 +94,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: 100,
                     child: Stack(
                       children: [
-                        (showMap)? Views(true) : Map(false),
+                        (showMap)? const Views(true) : const Map(false),
                         Positioned(
                           top: 55,
                           right: 28,
                           child: Container(
                             height: 40,
                             width: 40,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(5)
                               ),
@@ -115,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   showMap = !showMap;
                                 });
                               },
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.flip_camera_android,
                                 color: Colors.white,
                                 size: 16,

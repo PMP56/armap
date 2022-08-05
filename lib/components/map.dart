@@ -1,3 +1,4 @@
+import 'package:armap/models/Markers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -25,40 +26,6 @@ class _MapState extends State<Map> {
       interval: 1000,
     );
   }
-
-  // Future<List?> _currentLocation() async {
-  //   await _locationService.changeSettings(
-  //     accuracy: LocationAccuracy.high,
-  //     interval: 1000,
-  //   );
-  //
-  //   bool serviceEnabled;
-  //   PermissionStatus permissionGranted;
-  //
-  //   Location location = new Location();
-  //
-  //   serviceEnabled = await location.serviceEnabled();
-  //   if (!serviceEnabled) {
-  //     serviceEnabled = await location.requestService();
-  //     if (!serviceEnabled) {
-  //       return null;
-  //     }
-  //   }
-  //
-  //   permissionGranted = await location.hasPermission();
-  //   if (permissionGranted == PermissionStatus.denied) {
-  //     permissionGranted = await location.requestPermission();
-  //     if (permissionGranted != PermissionStatus.granted) {
-  //       return null;
-  //     }
-  //   }
-  //   LocationData _currentPosition = await location.getLocation();
-  //   setState(() {
-  //     latitude_data = _currentPosition.latitude;
-  //     longitude_data = _currentPosition.longitude;
-  //   });
-  //   print(_currentPosition.latitude);
-  // }
 
   LocationData? _currentLocation;
   bool _liveUpdate = false;
@@ -124,7 +91,6 @@ class _MapState extends State<Map> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     // _currentLocation();
     mapController = MapController();
@@ -143,6 +109,24 @@ class _MapState extends State<Map> {
       currentLatLng = latLng.LatLng(0, 0);
     }
 
+    final Positions = <CustomMarker>[
+      CustomMarker("Department of Computer Science and Engineering", 9, 27.6199416, 85.5390304, Icon(Icons.house, color: Colors.lightBlue,)),
+      CustomMarker("Department of Biotechnology", 7, 27.61937, 85.539454, Icon(Icons.house, color: Colors.lightBlue,)),
+      CustomMarker("Department of Mechanical Engineering", 8, 27.619674, 85.539358, Icon(Icons.house, color: Colors.lightBlue,)),
+      CustomMarker("Department of Civil and Geomatics Engineering", 11, 27.619306, 85.538025, Icon(Icons.house, color: Colors.lightBlue,)),
+      CustomMarker("Department of Pharmacy", 12, 27.618904, 85.538054, Icon(Icons.house, color: Colors.lightBlue,)),
+      CustomMarker("School of Science", 6, 27.618909, 85.539352, Icon(Icons.house, color: Colors.lightBlue,)),
+      CustomMarker("AEC / Gol Ghar", 6, 27.618443, 85.539669, Icon(Icons.house, color: Colors.lightBlue,)),
+      CustomMarker("Boys Hostel", null, 27.617711, 85.53674, Icon(Icons.home_filled, color: Colors.greenAccent,)),
+      CustomMarker("Girls Hostel", null, 27.618039, 85.539304, Icon(Icons.home_filled, color: Colors.greenAccent,)),
+      CustomMarker("Staff Quarter", null, 27.617635, 85.539315, Icon(Icons.home_filled, color: Colors.greenAccent,)),
+      CustomMarker("KU Ground", null, 27.618605, 85.536987, Icon(Icons.sports_baseball, color: Colors.redAccent,)),
+      CustomMarker("Canteen (Mesh)", null, 27.617987, 85.53784, Icon(Icons.fastfood, color: Colors.yellow,)),
+      CustomMarker("Library", null, 27.618909, 85.538633, Icon(Icons.menu_book, color: Colors.blueGrey,)),
+      CustomMarker("Admin Building", 2, 27.619684, 85.538633, Icon(Icons.admin_panel_settings, color: Colors.blue,)),
+      CustomMarker("CV Raman Auditorium", null, 27.61944, 85.53895, Icon(Icons.house, color: Colors.lightBlue,)),
+    ];
+
     final markers = <Marker>[
       Marker(
         width: 80,
@@ -154,6 +138,16 @@ class _MapState extends State<Map> {
           size: 32,
         )
       ),
+      ...Positions.map((pos) => Marker(
+          width: 80,
+          height: 80,
+          point: latLng.LatLng(pos.latitude, pos.longitude),
+          builder: (ctx) => const Icon(
+            Icons.location_pin,
+            color: Colors.red,
+            size: 28,
+          )
+      ))
     ];
 
     return Scaffold(
@@ -173,6 +167,18 @@ class _MapState extends State<Map> {
           MarkerLayerOptions(
             markers: markers
           ),
+          // PolylineLayerOptions(
+          //   polylineCulling: false,
+          //   polylines: [
+          //     Polyline(
+          //       points: [latLng.LatLng(27.61970, 85.53833), latLng.LatLng(27.61871, 85.53827)],
+          //       strokeWidth: 3,
+          //       color: Colors.blue,
+          //       isDotted: true,
+          //
+          //     ),
+          //   ],
+          // ),
         ],
         nonRotatedChildren: [
           AttributionWidget.defaultWidget(
