@@ -1,4 +1,5 @@
 import 'package:armap/components/map.dart';
+import 'package:armap/components/views.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -42,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: const Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Map()
+        child: Views(title: "Views",)
 
       ),
     );

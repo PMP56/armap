@@ -37,6 +37,7 @@ dependencies:
   flutter_map: ^2.2.0
   latlong2: ^0.8.1
   location: ^4.2.0
+  ar_flutter_plugin: ^0.6.2
 
 dev_dependencies:
   flutter_test:
