@@ -1,9 +1,15 @@
+import 'dart:math';
+
+import 'package:armap/components/directionData.dart';
 import 'package:armap/models/Markers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:location/location.dart';
+
+
+// import 'directionData.dart';
 
 class Map extends StatefulWidget {
   final bool large;
@@ -98,6 +104,38 @@ class _MapState extends State<Map> {
     initLocationService();
   }
 
+  double deg2rad(deg){
+    return deg * (pi / 180);
+  }
+
+  List posList = <latLng.LatLng>[];
+  List peltonToJunctionData = peltonToJunction;
+  List<dynamic> ringRoadData = ringRoadAnti;
+  List<dynamic> ringRoadDataClockwise = ringRoadClockWise;
+
+  // double calculateDistance(latLng.LatLng p1, latLng.LatLng p2){
+  //   int R = 6371;
+  //   double dLat = deg2rad(p2.latitude - p1.latitude);
+  //   double dLon = deg2rad(p2.longitude - p1.longitude);
+  //
+  //   double a = sin(dLat / 2) * sin(dLat / 2) +
+  //       cos(deg2rad(p1.latitude)) * cos(deg2rad(p2.latitude)) *
+  //       sin(dLon / 2) * sin(dLon / 2);
+  //
+  //   double c = 2 * atan2(sqrt(a), sqrt(1-a));
+  //   double d = R * c;
+  //   return d;
+  // }
+
+  void getLocation(block){
+    latLng.LatLng p1 = latLng.LatLng(27.62023, 85.53815);
+    latLng.LatLng p2 = breakPoints[block]?[0]?? latLng.LatLng(27.61968, 85.53833); //destination
+
+    int p2Index = (breakPoints[block]?[1])? ringRoadDataClockwise.indexOf(p2) : ringRoadData.indexOf(p2);
+    List<dynamic> tempPoints = (breakPoints[block]?[1])? ringRoadDataClockwise.sublist(0, p2Index) : ringRoadData.sublist(0, p2Index);
+    posList = [...peltonToJunctionData, ...tempPoints];
+  }
+
   @override
   Widget build(BuildContext context) {
     latLng.LatLng currentLatLng;
@@ -116,16 +154,17 @@ class _MapState extends State<Map> {
       CustomMarker("Department of Civil and Geomatics Engineering", 11, 27.619306, 85.538025, Icon(Icons.house, color: Colors.lightBlue,)),
       CustomMarker("Department of Pharmacy", 12, 27.618904, 85.538054, Icon(Icons.house, color: Colors.lightBlue,)),
       CustomMarker("School of Science", 6, 27.618909, 85.539352, Icon(Icons.house, color: Colors.lightBlue,)),
-      CustomMarker("AEC / Gol Ghar", 6, 27.618443, 85.539669, Icon(Icons.house, color: Colors.lightBlue,)),
-      CustomMarker("Boys Hostel", null, 27.617711, 85.53674, Icon(Icons.home_filled, color: Colors.greenAccent,)),
-      CustomMarker("Girls Hostel", null, 27.618039, 85.539304, Icon(Icons.home_filled, color: Colors.greenAccent,)),
-      CustomMarker("Staff Quarter", null, 27.617635, 85.539315, Icon(Icons.home_filled, color: Colors.greenAccent,)),
-      CustomMarker("KU Ground", null, 27.618605, 85.536987, Icon(Icons.sports_baseball, color: Colors.redAccent,)),
-      CustomMarker("Canteen (Mesh)", null, 27.617987, 85.53784, Icon(Icons.fastfood, color: Colors.yellow,)),
-      CustomMarker("Library", null, 27.618909, 85.538633, Icon(Icons.menu_book, color: Colors.blueGrey,)),
-      CustomMarker("Admin Building", 2, 27.619684, 85.538633, Icon(Icons.admin_panel_settings, color: Colors.blue,)),
-      CustomMarker("CV Raman Auditorium", null, 27.61944, 85.53895, Icon(Icons.house, color: Colors.lightBlue,)),
+      CustomMarker("AEC / Gol Ghar", 34, 27.618443, 85.539669, Icon(Icons.house, color: Colors.lightBlue,)),
+      CustomMarker("Boys Hostel", 18, 27.617711, 85.53674, Icon(Icons.home_filled, color: Colors.greenAccent,)),
+      CustomMarker("Girls Hostel", 16, 27.618039, 85.539304, Icon(Icons.home_filled, color: Colors.greenAccent,)),
+      CustomMarker("Staff Quarter", 15, 27.617635, 85.539315, Icon(Icons.home_filled, color: Colors.greenAccent,)),
+      CustomMarker("KU Ground", 22, 27.618605, 85.536987, Icon(Icons.sports_baseball, color: Colors.redAccent,)),
+      CustomMarker("Canteen (Mesh)", 13, 27.617987, 85.53784, Icon(Icons.fastfood, color: Colors.yellow,)),
+      CustomMarker("Library", 3, 27.618909, 85.538633, Icon(Icons.menu_book, color: Colors.blueGrey,)),
+      CustomMarker("Administration Building", 2, 27.619684, 85.538633, Icon(Icons.admin_panel_settings, color: Colors.blue,)),
+      CustomMarker("CV Raman Auditorium", 4, 27.61944, 85.53895, Icon(Icons.house, color: Colors.lightBlue,)),
     ];
+
 
     final markers = <Marker>[
       Marker(
@@ -142,10 +181,19 @@ class _MapState extends State<Map> {
           width: 80,
           height: 80,
           point: latLng.LatLng(pos.latitude, pos.longitude),
-          builder: (ctx) => const Icon(
-            Icons.location_pin,
-            color: Colors.red,
-            size: 28,
+          builder: (ctx) => GestureDetector(
+            onDoubleTap: () => getLocation(pos.block),
+            child: Tooltip(
+              triggerMode: TooltipTriggerMode.tap,
+              // height: 200,
+              message: "${pos.name}",
+              verticalOffset: -50,
+              child: Icon(
+                Icons.location_pin,
+                color: Colors.red,
+                size: (widget.large)? 28 : 18,
+              ),
+            ),
           )
       ))
     ];
@@ -164,21 +212,21 @@ class _MapState extends State<Map> {
             urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
             userAgentPackageName: 'com.example.app',
           ),
-          MarkerLayerOptions(
-            markers: markers
+          PolylineLayerOptions(
+            polylineCulling: false,
+            polylines: [
+              Polyline(
+                points: [...posList],//[...peltonToJunctionData,...ringRoadData],
+                strokeWidth: 3,
+                color: Colors.blue,
+                isDotted: true,
+
+              ),
+            ],
           ),
-          // PolylineLayerOptions(
-          //   polylineCulling: false,
-          //   polylines: [
-          //     Polyline(
-          //       points: [latLng.LatLng(27.61970, 85.53833), latLng.LatLng(27.61871, 85.53827)],
-          //       strokeWidth: 3,
-          //       color: Colors.blue,
-          //       isDotted: true,
-          //
-          //     ),
-          //   ],
-          // ),
+          MarkerLayerOptions(
+              markers: markers
+          ),
         ],
         nonRotatedChildren: [
           AttributionWidget.defaultWidget(
