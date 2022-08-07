@@ -1,16 +1,11 @@
-# armap
+# ARMap
 
-A new Flutter project.
+A simple ARMap of Kathmandu University for KUHack Fest 2022
 
-## Getting Started
+## What it solves
 
-This project is a starting point for a Flutter application.
+Navigating through Kathmandu University is extremely difficult especially when you are new to the university since there are so many paths and almost all the buildings look identical. 
+The app tries to solve this problem by giving directions on a real-time camera using Augmented Reality. It lets you navigate to major places within the KU premises using the map. It then tries to find the shortest path (if mentioned on the map) and shows AR directions following those paths. The app can be scaled to larger premises or locations in the future.
 
-A few resources to get you started if this is your first Flutter project:
+- [Devfolio project](https://devfolio.co/projects/armap-fd51)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
