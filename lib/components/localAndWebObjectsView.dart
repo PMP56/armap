@@ -61,28 +61,38 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
       showFeaturePoints: false,
       showPlanes: true,
       // customPlaneTexturePath: "assets/triangle.png",
-      showWorldOrigin: true,
+      showWorldOrigin: false,
       handleTaps: true,
     );
     this.arObjectManager.onInitialize();
   }
 
-  // Future<void> onLocalObjectButtonPressed() async {
-  //   if (localObjectNode != null) {
-  //     arObjectManager.removeNode(localObjectNode!);
-  //     localObjectNode = null;
-  //   } else {
-  //     var newNode = ARNode(
-  //         type: NodeType.localGLTF2,
-  //         uri: "assets/Chicken_01/Chicken_01.gltf",
-  //         scale: Vector3(0.2, 0.2, 0.2),
-  //         position: Vector3(0.0, 0.0, 0.0),
-  //         rotation: Vector4(1.0, 0.0, 0.0, 0.0));
-  //     bool? didAddLocalNode = await arObjectManager.addNode(newNode);
-  //     localObjectNode = (didAddLocalNode!) ? newNode : null;
-  //   }
-  // }
-  //
+  Future<void> onLocalObjectButtonPressed() async {
+    if (localObjectNode != null) {
+      arObjectManager.removeNode(localObjectNode!);
+      localObjectNode = null;
+    } else {
+      var newNode = ARNode(
+          type: NodeType.localGLTF2,
+          uri: "assets/sphere.obj",
+          scale: Vector3(0.2, 0.2, 0.2),
+          position: Vector3(0.0, 0.0, 0.0),
+          rotation: Vector4(1.0, 0.0, 0.0, 0.0));
+
+      var newNode2 = ARNode(
+          type: NodeType.localGLTF2,
+          uri: "assets/sphere.obj",
+          scale: Vector3(0.2, 0.2, 0.2),
+          position: Vector3(0.1, 0.1, 0.0),
+          rotation: Vector4(1.0, 0.0, 0.0, 0.0));
+
+      bool? didAddLocalNode = await arObjectManager.addNode(newNode);
+      bool? didAddLocalNode2 = await arObjectManager.addNode(newNode2);
+      localObjectNode = (didAddLocalNode!) ? newNode : null;
+      localObjectNode = (didAddLocalNode2!) ? newNode : null;
+    }
+  }
+
   Future<void> onWebObjectAtButtonPressed() async {
     if (webObjectNode != null) {
       arObjectManager.removeNode(webObjectNode!);
@@ -91,10 +101,24 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
       var newNode = ARNode(
           type: NodeType.webGLB,
           uri:
-          "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Fox/glTF-Binary/Fox.glb",
-          scale: Vector3(0.1, 0.1, 0.1));
+          "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Box/glTF-Binary/Box.glb",
+          scale: Vector3(0.0, 0.1, 0.1));
+      var newNode2 = ARNode(
+          type: NodeType.webGLB,
+          uri:
+          "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Box/glTF-Binary/Box.glb",
+          scale: Vector3(0.1, 0.1, 5));
+      var newNode3 = ARNode(
+          type: NodeType.webGLB,
+          uri:
+          "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Box/glTF-Binary/Box.glb",
+          scale: Vector3(0.2, 0.1, 10));
       bool? didAddWebNode = await arObjectManager.addNode(newNode);
+      bool? didAddWebNode2 = await arObjectManager.addNode(newNode2);
+      bool? didAddWebNode3 = await arObjectManager.addNode(newNode3);
       webObjectNode = (didAddWebNode!) ? newNode : null;
+      webObjectNode = (didAddWebNode2!) ? newNode : null;
+      webObjectNode = (didAddWebNode3!) ? newNode : null;
     }
   }
 }
